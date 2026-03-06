@@ -41,7 +41,7 @@ void add_row1_to_row2(double **mat, int n, int row1, int row2, double constant){
 
 double Gauss_alg(double **mat, int n){
     int column, row, base_row, base_row_selected;
-    double det = 1.0L;
+    double det = 1.0;
     for (column=0; column<n; column++){
         base_row_selected = 0;
         for (row=column; !base_row_selected && row<n; row++){
@@ -50,9 +50,9 @@ double Gauss_alg(double **mat, int n){
                 base_row_selected = 1;
             }
         }
-        if (!base_row_selected) return 0.0L;
+        if (!base_row_selected) return 0.0;
         det*=mat[base_row][column];
-        multiply_by_scalar(mat, n, base_row, 1.0L/mat[base_row][column]);
+        multiply_by_scalar(mat, n, base_row, 1.0/mat[base_row][column]);
         for (; row<n; row++){
             if (fabs(mat[row][column]) > EPSILON){
                 add_row1_to_row2(mat, n, base_row, row, -mat[row][column]);
