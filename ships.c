@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+//#include <lodepng.h>
 
 typedef struct queue_node{
     int x, y;
@@ -112,10 +113,10 @@ void scoop_the_blob(double **mat_brightness, int **mat_is_visited, double bright
 }
 
 int main(void){
-    int width, height, last_pixel = width*height, i, j, blob_number = 0, ptr = 0,
+    int width, height, i, j, blob_number = 0,
     *blob_size = (int*)calloc(10000, sizeof(int));
     scanf("%d%d", &width, &height);
-    double *mat_brightness[height];
+    double *mat_brightness[height], brightness_threshold = 0.5;
     int *mat_is_visited[height];
     for (i=0; i<height; i++){
         mat_brightness[i] = (double*)malloc(sizeof(double)*width);
@@ -126,14 +127,29 @@ int main(void){
             scanf("%lf", mat_brightness[i]+j);
         }
     }
-    scoop_the_blob(mat_brightness, mat_is_visited, 0.5, blob_size, 0, 0, 0, width, height);
+    for (i=0; i<width; i++){
+        for (j=0; j<height; j++){
+            if (!mat_is_visited[i][j]){
+                if (mat_brightness[i][j] > brightness_threshold){
+                    scoop_the_blob(mat_brightness, mat_is_visited, brightness_threshold, blob_size, blob_number, i, j, width, height);
+                    blob_number++;
+                }
+                else{
+                    mat_is_visited[i][j] = 1;
+                }
+            }
+        }
+    }
     for (i=0; i<height; i++){
         for (j=0; j<width; j++){
             printf("%d ", mat_is_visited[i][j]);
         }
         printf("\n");
     }
-    printf("%d\n", blob_size[0]);
+    for (i=0; i<blob_number; i++){
+        printf("%d ", blob_size[i]);
+    }
+    printf("\n");
     for (i=0; i<width; i++){
         free(mat_brightness[i]);
         free(mat_is_visited[i]);
